@@ -1,0 +1,10 @@
+{
+    "name": "Better Food Diary",
+    "version": "1.0",
+    "description": "Improves the myfitnesspal.com food diary.",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": "images/icon38.png",
+        "default_title": "Better Food Diary"
+    }
+}
