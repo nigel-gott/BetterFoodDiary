@@ -17,6 +17,14 @@
                 "http://www.myfitnesspal.com/reports/printable_diary",
                 "http://www.myfitnesspal.com/reports/printable_diary/*"
             ],
+            "js": ["scripts/jquery.js", "scripts/normal_printable_diary.js"]
+        }
+    ,
+        {
+            "matches": [
+                "http://www.myfitnesspal.com/reports/printable_diary?bfd",
+                "http://www.myfitnesspal.com/reports/printable_diary/*?bfd"
+            ],
             "js": ["scripts/jquery.js", "scripts/bfd.js"]
         }
     ],

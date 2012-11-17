@@ -20,5 +20,9 @@ if(new_from_year_value != $('#from_year').val()){
     // TODO: Add cleaner way of getting the username, this way is pretty hacky.
     var username = $('#header h1 strong').text().toLowerCase();
     $('#username').val(username);
-    $('.change-report form').submit();
+
+    var form = $('.change-report form');
+    original_action = form.attr('action');
+    form.attr('action', original_action + '?bfd');
+    form.submit();
 }
