@@ -6,5 +6,11 @@
     "browser_action": {
         "default_icon": "images/icon38.png",
         "default_title": "Better Food Diary"
-    }
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://www.myfitnesspal.com/reports/printable_diary/*"],
+            "js": ["scripts/jquery.js", "scripts/bfd.js"]
+        }
+    ]
 }
