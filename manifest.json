@@ -9,7 +9,7 @@
             "matches": [
                 "http://www.myfitnesspal.com/food/diary/*"
             ],
-            "js": ["scripts/jquery.js", "scripts/bfd.js"]
+            "js": ["js/jquery.js", "js/bfd.js"]
         }
     ],
     "permissions": [
