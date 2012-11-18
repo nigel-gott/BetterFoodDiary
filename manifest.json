@@ -10,6 +10,18 @@
                 "http://www.myfitnesspal.com/food/diary/*"
             ],
             "js": ["js/jquery.js", "js/bfd.js"]
+        },
+        {
+            "matches": [
+                "http://www.myfitnesspal.com/reports/printable_diary/?load"
+            ],
+            "js": ["js/jquery.js", "js/process_printable_diary.js"]
+        },
+        {
+            "matches": [
+                "http://www.myfitnesspal.com/reports/printable_diary/?send"
+            ],
+            "js": ["js/jquery.js", "js/send_bfd_printable_diary.js"]
         }
     ],
     "permissions": [

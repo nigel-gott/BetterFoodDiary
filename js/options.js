@@ -1,6 +1,8 @@
 $(document).ready(function() {
     $('#populate_meals_link').click(function(){
-        meals.populate_with_last_year();
+        meals.read_meals_from_printable_diary(function(data){
+            $('#meals').append(data);    
+        });
         return false;
     });
 
