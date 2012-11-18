@@ -1,34 +1,19 @@
 {
     "name": "Better Food Diary",
-    "version": "1.0",
+    "version": "0.0.0.1",
     "description": "Improves the myfitnesspal.com food diary.",
     "manifest_version": 2,
-    "browser_action": {
-        "default_icon": "images/icon38.png",
-        "default_title": "Better Food Diary"
-    },
-    "background": {
-        "scripts": ["scripts/browser_action_event.js"],
-        "persistent": false
-    },
     "content_scripts": [
         {
             "matches": [
-                "http://www.myfitnesspal.com/reports/printable_diary",
-                "http://www.myfitnesspal.com/reports/printable_diary/*"
-            ],
-            "js": ["scripts/jquery.js", "scripts/normal_printable_diary.js"]
-        }
-    ,
-        {
-            "matches": [
-                "http://www.myfitnesspal.com/reports/printable_diary?bfd",
-                "http://www.myfitnesspal.com/reports/printable_diary/*?bfd"
+                "http://www.myfitnesspal.com/food/diary/*"
             ],
             "js": ["scripts/jquery.js", "scripts/bfd.js"]
         }
     ],
     "permissions": [
-        "tabs"
+        "tabs",
+        "unlimitedStorage",
+        "storage"
     ]
 }
