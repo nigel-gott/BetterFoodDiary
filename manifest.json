@@ -3,6 +3,7 @@
     "version": "0.0.0.1",
     "description": "Improves the myfitnesspal.com food diary.",
     "manifest_version": 2,
+    "options_page": "options.html",
     "content_scripts": [
         {
             "matches": [
