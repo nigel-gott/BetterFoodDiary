@@ -1,4 +1,7 @@
 $(document).ready(function() {
-    $('body').prepend('<h1> BFD Options </h1>');
+    $('#populate_meals_link').click(function(){
+        meals.populate_with_last_year();
+        return false;
+    });
 });
 
