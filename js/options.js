@@ -9,9 +9,11 @@ $(document).ready(function() {
     $('#get_meals_link').click(function(){
         meals.get_meals(function(meals){
             meals = JSON.parse(meals);
+            var meals_html;
             for(var i = 0; i < meals.length; i++){
-                $('#meals').append('<p>'+meals[i]+'</p>');
+                meals_html += '<p>' + meals[i] + '</p>';
             }
+            $('#meals').html(meals_html);
         });
         return false;
     });

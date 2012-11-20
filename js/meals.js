@@ -24,7 +24,9 @@ meals = (function(){
             chrome.extension.onMessage.addListener(
                 function(request, sender, sendResponse){
                     alert('Got response!');
-                    store(JSON.parse(request.meals));
+                    meals = JSON.parse(request.meals);
+                    store(meals);
+                    callback(meals);
                 }
             );
 
