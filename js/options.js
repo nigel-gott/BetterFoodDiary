@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('#populate_meals_link').click(function(){
         meals.read_meals_from_printable_diary(function(data){
-            $('#meals').append(data);    
+            $('#meals').html(data);    
         });
         return false;
     });
