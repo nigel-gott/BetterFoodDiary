@@ -30,9 +30,8 @@ meals_loader = (function(){
                 }
             );
 
-            var $iframe = $('<iframe id="printable_diary_iframe" src="http://www.myfitnesspal.com/reports/printable_diary/?load"></iframe>');
-            $iframe.hide();
-            $('body').append($iframe);
+            backgroundPage = chrome.extension.getBackgroundPage();
+            backgroundPage.load_hidden_printable_diary();
         },
         get_meals : function(callback){
             storage.get('meals', function(result){
