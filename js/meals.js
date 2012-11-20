@@ -1,9 +1,9 @@
-meals = (function(){
+meals_loader = (function(){
     var storage = chrome.storage.local;
 
     var store = function(meals){
         storage.get('meals', function(result){
-            stored_meals = parse_meals(result['meals']);
+            var stored_meals = parse_meals(result['meals']);
 
             stored_meals.push.apply(stored_meals, meals);
             storage.set({'meals': JSON.stringify(stored_meals)});
@@ -24,7 +24,7 @@ meals = (function(){
             chrome.extension.onMessage.addListener(
                 function(request, sender, sendResponse){
                     $('#printable_diary_iframe').remove();
-                    meals = JSON.parse(request.meals);
+                    var meals = parse_meals(request['meals']); 
                     store(meals);
                     callback(meals);
                 }
@@ -36,7 +36,7 @@ meals = (function(){
         },
         get_meals : function(callback){
             storage.get('meals', function(result){
-                callback(result['meals']);
+                callback(JSON.parse(result['meals']));
             });
         }
     };
