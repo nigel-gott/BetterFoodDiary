@@ -14,6 +14,5 @@ $('#username').val(username);
 
 $form = $('.change-report form');
 $form.attr('action', $form.attr('action') + '/?send');
-alert('Submitting!');
 $form.submit();
 

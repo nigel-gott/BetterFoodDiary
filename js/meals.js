@@ -23,14 +23,16 @@ meals = (function(){
         read_meals_from_printable_diary : function(callback){
             chrome.extension.onMessage.addListener(
                 function(request, sender, sendResponse){
-                    alert('Got response!');
+                    $('#printable_diary_iframe').remove();
                     meals = JSON.parse(request.meals);
                     store(meals);
                     callback(meals);
                 }
             );
 
-            chrome.tabs.create({url: 'http://www.myfitnesspal.com/reports/printable_diary/?load'});
+            var $iframe = $('<iframe id="printable_diary_iframe" src="http://www.myfitnesspal.com/reports/printable_diary/?load"></iframe>');
+            $iframe.hide();
+            $('body').append($iframe);
         },
         get_meals : function(callback){
             storage.get('meals', function(result){
