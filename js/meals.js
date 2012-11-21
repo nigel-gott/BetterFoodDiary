@@ -1,43 +1,45 @@
-meals_loader = (function(){
+meals_store = (function(){
     var storage = chrome.storage.local;
 
-    var store = function(meals){
-        storage.get('meals', function(result){
-            var stored_meals = parse_meals(result['meals']);
-
-            stored_meals.push.apply(stored_meals, meals);
-            storage.set({'meals': JSON.stringify(stored_meals)});
-        });
-    };
-
-    var parse_meals = function(meals){
+    function parse_meals(meals){
         if(meals === undefined){
             return [];
         } else {
             return JSON.parse(meals);
         }
-    };
+    }
 
+    function get(callback){
+        storage.get('meals', function(result){
+            var stored_meals = parse_meals(result['meals']);
+            callback(stored_meals);
+        });
+    }
+
+    function set(meals){
+        storage.set({'meals': JSON.stringify(meals)});
+    }
+
+    function append(new_meals){
+        get(function(stored_meals){
+            // TODO: Make sure we don't make duplicate meals.
+            stored_meals.push.apply(stored_meals, new_meals);
+            set(stored_meals);
+        });
+    }
 
     return {
-        read_meals_from_printable_diary : function(callback){
-            chrome.extension.onMessage.addListener(
-                function(request, sender, sendResponse){
-                    $('#printable_diary_iframe').remove();
-                    var meals = parse_meals(request['meals']); 
-                    store(meals);
-                    callback(meals);
-                }
-            );
-
-            backgroundPage = chrome.extension.getBackgroundPage();
-            backgroundPage.load_hidden_printable_diary();
-        },
-        get_meals : function(callback){
-            storage.get('meals', function(result){
-                callback(JSON.parse(result['meals']));
-            });
-        }
+        get: get,
+        append: append
     };
 })();
+
+function scrape_and_store_meals(callback){
+    backgroundPage = chrome.extension.getBackgroundPage();
+    backgroundPage.scrape_from_printable_diary(function(meals){
+        meals_store.append(meals);
+        callback(meals);
+    });
+}
+
 

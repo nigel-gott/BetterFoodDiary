@@ -1,3 +1,4 @@
+// Content script for "http://www.myfitnesspal.com/food/diary/*"
 $('#content').prepend('<a href="' + chrome.extension.getURL("options.html") + '">BFD - Options</a>');
 
 // Find all the ingredient rows.
