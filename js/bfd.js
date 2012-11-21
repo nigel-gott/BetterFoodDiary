@@ -10,10 +10,13 @@ $('#main .container tbody tr:not([class])').each(function(){
     var calories = td_to_int(tds[0]); 
 
     var add_rollover = function(td, efficiency, value){
+        // TODO: Change the colours to a scale depending on efficiency
         $(td).mouseenter(function(){
+            $(td).css('color','red');
             $(td).html(efficiency);
         });
         $(td).mouseleave(function(){
+            $(td).css('color','black');
             $(td).html(value);
         });
     }
