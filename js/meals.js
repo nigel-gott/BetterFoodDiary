@@ -1,4 +1,6 @@
-meals_store = (function(){
+var bfd = bfd || {};
+
+bfd.meals_store = (function(){
     var storage = chrome.storage.local;
 
     function parse_meals(meals){
@@ -34,10 +36,9 @@ meals_store = (function(){
     };
 })();
 
-function scrape_and_store_meals(callback){
-    backgroundPage = chrome.extension.getBackgroundPage();
-    backgroundPage.scrape_from_printable_diary(function(meals){
-        meals_store.append(meals);
+bfd.scrape_and_store_meals = function (callback){
+    bfd.scrape_from_printable_diary(function(meals){
+        bfd.meals_store.append(meals);
         callback(meals);
     });
 }

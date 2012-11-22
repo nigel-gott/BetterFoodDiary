@@ -1,4 +1,4 @@
-scrape_from_printable_diary = function(callback){
+bfd.scrape_from_printable_diary = function(callback){
     var $iframe = $('<iframe id="printable_diary_iframe" src="http://www.myfitnesspal.com/reports/printable_diary/?load"></iframe>');
 
     chrome.extension.onMessage.addListener(

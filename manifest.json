@@ -12,7 +12,7 @@
             "matches": [
                 "http://www.myfitnesspal.com/food/diary/*"
             ],
-            "js": ["js/jquery.js", "js/bfd.js"]
+            "js": ["js/jquery.js", "js/food_diary.js"]
         },
         {
             "matches": [
@@ -32,7 +32,6 @@
     "permissions": [
         "tabs",
         "unlimitedStorage",
-        "storage",
-        "background"
+        "storage"
     ]
 }
