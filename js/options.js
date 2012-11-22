@@ -4,7 +4,7 @@ $(document).ready(function() {
         bfd.scrape_and_store_meals(function(data){
             $('#meals').html(data);    
         });
-        return false;
+        event.preventDefault();
     });
 
     $('#get_meals_link').click(function(){
@@ -15,7 +15,7 @@ $(document).ready(function() {
             }
             $('#meals').html(meals_html);
         });
-        return false;
+        event.preventDefault();
     });
 });
 
