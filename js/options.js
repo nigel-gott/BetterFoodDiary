@@ -23,8 +23,11 @@ $(document).ready(function() {
     });
 
     $('#clear_meals_link').click(function(){
+        // TODO: Add a big confirmation popup thingy before actually clearing.
         event.preventDefault();
         bfd.meals_store.clear();
     });
+
+    $('body').prepend('<a href="' + chrome.extension.getURL("unittests.html") + '">Unit tests</a>');
 });
 

@@ -39,3 +39,14 @@ bfd.scrape_from_printable_diary = function(callback){
     $('body').append($iframe);
 
 }
+
+bfd.scrape_and_store_meals = function (callback){
+    bfd.scrape_from_printable_diary(function(meals, success){
+        if(success){
+            bfd.meals_store.append(meals);
+        }
+        callback(meals, success);
+    });
+}
+
+
