@@ -12,21 +12,21 @@
             "matches": [
                 "http://www.myfitnesspal.com/food/diary/*"
             ],
-            "js": ["js/jquery.js", "js/food_diary.js"]
+            "js": ["js/jquery.js", "js/cs/food_diary.js"]
         },
         {
             "matches": [
                 "http://www.myfitnesspal.com/reports/printable_diary/?load"
             ],
             "all_frames": true,
-            "js": ["js/jquery.js", "js/process_printable_diary.js"]
+            "js": ["js/jquery.js", "js/cs/load_printable_diary.js"]
         },
         {
             "matches": [
                 "http://www.myfitnesspal.com/reports/printable_diary/?send"
             ],
             "all_frames": true,
-            "js": ["js/jquery.js", "js/send_bfd_printable_diary.js"]
+            "js": ["js/jquery.js", "js/cs/send_printable_diary.js"]
         }
     ],
     "permissions": [
