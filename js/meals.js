@@ -37,9 +37,11 @@ bfd.meals_store = (function(){
 })();
 
 bfd.scrape_and_store_meals = function (callback){
-    bfd.scrape_from_printable_diary(function(meals){
-        bfd.meals_store.append(meals);
-        callback(meals);
+    bfd.scrape_from_printable_diary(function(meals, success){
+        if(success){
+            bfd.meals_store.append(meals);
+        }
+        callback(meals, success);
     });
 }
 

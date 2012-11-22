@@ -27,7 +27,15 @@
             ],
             "all_frames": true,
             "js": ["js/jquery.js", "js/cs/send_printable_diary.js"]
+        },
+        {
+            "matches": [
+                "http://www.myfitnesspal.com/account/login"
+            ],
+            "all_frames": true,
+            "js": ["js/cs/detect_not_logged_in.js"]
         }
+
     ],
     "permissions": [
         "tabs",

@@ -20,15 +20,18 @@ bfd.scrape_from_printable_diary = function(callback){
     // the default page behaviour wont change for the user, they can still use
     // reports/printable_diary just as usual.
 
-    // TODO: Figure out when the user isn't logged in and display an error.
     var $iframe = $('<iframe id="printable_diary_iframe" src="http://www.myfitnesspal.com/reports/printable_diary/?load"></iframe>');
 
     chrome.extension.onMessage.addListener(
         function(request, sender, sendResponse){
-            var scraped_meals = request.scraped_meals;
-            if(scraped_meals !== undefined){
-                $iframe.remove();
-                callback(JSON.parse(scraped_meals));
+            if(request.not_logged_in){
+                callback(null, false);
+            } else {
+                var scraped_meals = request.scraped_meals;
+                if(scraped_meals !== undefined){
+                    $iframe.remove();
+                    callback(JSON.parse(scraped_meals), true);
+                }
             }
         }
     );
