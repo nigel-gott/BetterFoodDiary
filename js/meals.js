@@ -30,9 +30,14 @@ bfd.meals_store = (function(){
         });
     }
 
+    function clear(){
+        set([]);
+    }
+
     return {
         get: get,
-        append: append
+        append: append,
+        clear: clear
     };
 })();
 
