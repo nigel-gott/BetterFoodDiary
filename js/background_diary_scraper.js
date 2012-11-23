@@ -1,15 +1,15 @@
-bfd.scrape_from_printable_diary = function(callback){
+bfd.scrape_and_store_meals = function(callback){
     // Scrapes the users printable diary to get meal data for the past year. 
     //
     // The method in which we do this is a bit clunky, but the best with what 
     // we are given. 
     //
     // 1. Open an iframe in background.html which points to the users printable
-    // diary, combined with a dummy get parameter we can load in a specific 
+    // diary, combined with a dummy get parameter ?load we can load in a specific 
     // content script (js/cs/load_printable_diary.js).
     //
     // 2. The content script sets the pages form to get a years worth of data 
-    // (it defaults to only displayed a days worth) and then submits it. 
+    // (it defaults to displaying a days worth) and then submits it. 
     // It has also changed the action of the form so that the dummy get is now
     // ?send, which loads a different content script (js/cs/send_printable_diary.js).
     //
@@ -24,29 +24,24 @@ bfd.scrape_from_printable_diary = function(callback){
 
     chrome.extension.onMessage.addListener(
         function(message, sender, sendResponse){
-            if(message.not_logged_in){
-                callback(null, false);
-            } else {
-                var scraped_meals = message.scraped_meals;
-                if(scraped_meals !== undefined){
-                    $iframe.remove();
-                    callback(JSON.parse(scraped_meals), true);
-                }
+            var scraped_meals = message.scraped_meals;
+
+            if(scraped_meals){
+                scraped_meals = JSON.parse(scraped_meals);
+                bfd.meals_store.append(scraped_meals);
+            } else if(!message.not_logged_in){
+                // Recieved a message we don't care about, don't want to do 
+                // cleanup just yet.
+                return;
             }
+
+            chrome.extension.onMessage.removeListener(this);
+            $iframe.remove();
+            callback(scraped_meals);
         }
     );
 
     $('body').append($iframe);
 
 }
-
-bfd.scrape_and_store_meals = function (callback){
-    bfd.scrape_from_printable_diary(function(meals, success){
-        if(success){
-            bfd.meals_store.append(meals);
-        }
-        callback(meals, success);
-    });
-}
-
 

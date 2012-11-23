@@ -1,30 +1,30 @@
 $(document).ready(function() {
     var bfd = chrome.extension.getBackgroundPage().bfd;
-    $('#scrape_meals_link').click(function(){
+
+    $('#scrape_meals_link').click(function() {
         event.preventDefault();
-        bfd.scrape_and_store_meals(function(data, success){
-            if(success){
-                $('#meals').html(data);    
+
+        bfd.scrape_and_store_meals(function(scraped_meals){
+            if(scraped_meals){
+                $('#meals').html(scraped_meals);    
             } else {
-                $('#meals').html('<h1> You are not logged into myfitnesspal.com </h1>');
+                $('#meals').html('<h2> You are not logged into myfitnesspal.com </h2>');
             }
         });
     });
 
-    $('#get_meals_link').click(function(){
+    $('#get_meals_link').click(function() {
         event.preventDefault();
+
         bfd.meals_store.get(function(meals){
-            var meals_html = '';
-            for(var i = 0; i < meals.length; i++){
-                meals_html += '<p>' + meals[i] + '</p>';
-            }
-            $('#meals').html(meals_html);
+            $('#meals').html(meals);
         });
     });
 
-    $('#clear_meals_link').click(function(){
+    $('#clear_meals_link').click(function() {
         // TODO: Add a big confirmation popup thingy before actually clearing.
         event.preventDefault();
+
         bfd.meals_store.clear();
     });
 
