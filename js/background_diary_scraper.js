@@ -1,4 +1,4 @@
-bfd.scrape_and_store_meals = function(callback){
+bfd.scrape_and_store_meals = function(callback) { 
     // Scrapes the users printable diary to get meal data for the past year. 
     //
     // The method in which we do this is a bit clunky, but the best with what 
@@ -20,28 +20,33 @@ bfd.scrape_and_store_meals = function(callback){
     // the default page behaviour wont change for the user, they can still use
     // reports/printable_diary just as usual.
 
-    var $iframe = $('<iframe id="printable_diary_iframe" src="http://www.myfitnesspal.com/reports/printable_diary/?load"></iframe>');
+    // Make sure we only have one scraper going at once.
+    if($('iframe').length == 0){
+        var $iframe = $('<iframe src="http://www.myfitnesspal.com/reports/printable_diary/?load"></iframe>');
 
-    chrome.extension.onMessage.addListener(
-        function(message, sender, sendResponse){
-            var scraped_meals = message.scraped_meals;
+        chrome.extension.onMessage.addListener(
+            function scrapeListener(message, sender, sendResponse) {
+                var scraped_meals = message.scraped_meals;
 
-            if(scraped_meals){
-                scraped_meals = JSON.parse(scraped_meals);
-                bfd.meals_store.append(scraped_meals);
-            } else if(!message.not_logged_in){
-                // Recieved a message we don't care about, don't want to do 
-                // cleanup just yet.
-                return;
+                if(scraped_meals){
+                    scraped_meals = JSON.parse(scraped_meals);
+                    bfd.meals_store.append(scraped_meals);
+                } else if(!message.not_logged_in){
+                    // Recieved a message we don't care about, don't want to do 
+                    // cleanup just yet.
+                    return;
+                }
+
+                callback(scraped_meals);
+
+                chrome.extension.onMessage.removeListener(scrapeListener);
+                $iframe.remove();
             }
+        );
 
-            chrome.extension.onMessage.removeListener(this);
-            $iframe.remove();
-            callback(scraped_meals);
-        }
-    );
-
-    $('body').append($iframe);
-
+        $('body').append($iframe);
+    } else {
+        alert('Scraper already running...');
+    }
 }
 
