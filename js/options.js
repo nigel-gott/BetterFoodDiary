@@ -4,11 +4,11 @@ $(document).ready(function() {
     $('#scrape_meals_link').click(function() {
         event.preventDefault();
 
-        bfd.scrape_and_store_meals(function(scraped_meals){
+        bfd.scrape_and_store_meals(function(scraped_meals, error_message){
             if(scraped_meals){
                 $('#meals').html(scraped_meals);    
             } else {
-                $('#meals').html('<h2> You are not logged into myfitnesspal.com </h2>');
+                $('#meals').html('<h2>' + error_message + '</h2>');
             }
         });
     });

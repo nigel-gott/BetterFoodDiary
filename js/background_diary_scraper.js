@@ -27,17 +27,20 @@ bfd.scrape_and_store_meals = function(callback) {
         chrome.extension.onMessage.addListener(
             function scrapeListener(message, sender, sendResponse) {
                 var scraped_meals = message.scraped_meals;
+                var error_message = '';
 
                 if(scraped_meals){
                     scraped_meals = JSON.parse(scraped_meals);
                     bfd.meals_store.append(scraped_meals);
-                } else if(!message.not_logged_in){
+                } else if(message.not_logged_in){
+                    error_message = 'Not logged into myfitnesspal.com.';
+                } else {
                     // Recieved a message we don't care about, don't want to do 
                     // cleanup just yet.
                     return;
                 }
 
-                callback(scraped_meals);
+                callback(scraped_meals, error_message);
 
                 chrome.extension.onMessage.removeListener(scrapeListener);
                 $iframe.remove();
@@ -46,7 +49,7 @@ bfd.scrape_and_store_meals = function(callback) {
 
         $('body').append($iframe);
     } else {
-        alert('Scraper already running...');
+        callback(null, "Already scraping.");
     }
 }
 
