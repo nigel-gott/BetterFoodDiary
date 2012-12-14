@@ -1,16 +1,18 @@
-$(document).ready(function() {
+$(function() {
     var bfd = chrome.extension.getBackgroundPage().bfd;
 
     $('#scrape_meals_link').click(function() {
         event.preventDefault();
 
-        bfd.scrape_and_store_meals(function(scraped_meals, error_message){
-            if(scraped_meals){
+        $.when(bfd.scraper.start()).then(
+            function done(scraped_meals){
+                bfd.meals_store.append(scraped_meals);
                 $('#meals').html(scraped_meals);    
-            } else {
+            }, 
+            function fail(error_message){
                 $('#meals').html('<h2>' + error_message + '</h2>');
             }
-        });
+        );
     });
 
     $('#get_meals_link').click(function() {

@@ -1,4 +1,3 @@
-
 // Scrapes the users printable diary to get meal data for the past year. //{{{
 //
 // The method in which we do this is a bit clunky, but the best with what 
@@ -22,57 +21,61 @@
 
 var bfd = bfd || {};
 
-bfd.scrape_and_store_meals = (function(){ 
+bfd.Scraper = function Scraper(){ 
 
-    function clean_up_scraper(scrape_listener, $iframe){
+    var INITIAL_SCRAPING_URL = 'http://www.myfitnesspal.com/reports/printable_diary/?load';
+    var ALREADY_SCRAPING_ERROR = 'Already scraping.';
+    var NOT_LOGGED_IN_ERROR = 'Not logged into myfitnesspal.com';
+
+    var current_defer;
+    var $iframe;
+
+    function scraper_result_listener(message) {
+        var scraped_meals = message.scraped_meals && JSON.parse(message.scraped_meals);
+
+        if(scraped_meals){
+            current_defer.resolve(scraped_meals);
+        } else if(message.not_logged_in){
+            current_defer.reject(NOT_LOGGED_IN_ERROR);
+        } else {
+            // Recieved a message we don't care about, don't want to do 
+            // cleanup just yet.
+            return;
+        }
+
+        clean_up_scraper();
+    }
+
+    function clean_up_scraper(){
         $iframe.remove();
-        chrome.extension.onMessage.removeListener(scrape_listener);
+        chrome.extension.onMessage.removeListener(scraper_result_listener);
+        current_defer = false;
     }
 
-    function add_listener(callback, $iframe) {
-        chrome.extension.onMessage.addListener(
+    function start() { 
+        var defer = $.Deferred();
 
-            function scrape_listener(message){
-                var scraped_meals = message.scraped_meals && JSON.parse(message.scraped_meals);
-                var error_message = '';
+        if(!current_defer) {
+            chrome.extension.onMessage.addListener(scraper_result_listener);
 
-                if(scraped_meals){
-                    bfd.meals_store.append(scraped_meals);
-                } else if(message.not_logged_in){
-                    error_message = 'Not logged into myfitnesspal.com.';
-                } else {
-                    alert('C');
-                    // Recieved a message we don't care about, don't want to do 
-                    // cleanup just yet.
-                    return;
-                }
-                
-                callback(scraped_meals, error_message);
-                clean_up_scraper(scrape_listener, $iframe);
-            }
-
-        );
-    }
-
-    function no_other_scrapers_running(){
-        return $('iframe').length == 0;
-    }
-
-    function scrape_and_store_meals(callback) { 
-        if(no_other_scrapers_running()) {
-            var $iframe = $('<iframe src="' + scrape_and_store_meals.initial_scrape_url + '"></iframe>');
-
-            add_listener(callback, $iframe);
-
+            current_defer = defer;
+            $iframe = $('<iframe/>', {
+                src: INITIAL_SCRAPING_URL 
+            });
             $('body').append($iframe);
         } else {
-            callback(null, "Already scraping.");
+            defer.reject(ALREADY_SCRAPING_ERROR);
         }
+
+        return defer.promise();
     }
 
-    scrape_and_store_meals.initial_scrape_url = 'http://www.myfitnesspal.com/reports/printable_diary/?load';
+    return {
+        start : start,
+        ALREADY_SCRAPING_ERROR: ALREADY_SCRAPING_ERROR,
+        NOT_LOGGED_IN_ERROR: NOT_LOGGED_IN_ERROR
+    };
+};
 
-    return scrape_and_store_meals;
-})();
-
+bfd.scraper = bfd.Scraper();
 
