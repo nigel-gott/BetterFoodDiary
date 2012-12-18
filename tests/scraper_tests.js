@@ -7,6 +7,7 @@ describe("Scraper", function() {
 
     beforeEach(function() {
         scraper = new bfd.Scraper();
+
         var json_meals = JSON.stringify(DUMMY_SCRAPED_MEALS);
         dummy_message = { scraped_meals : json_meals };
 
@@ -32,11 +33,11 @@ describe("Scraper", function() {
         clearTimeout(listener_timeout_id);
     });
 
-    it("fails if start is called whilst already scraping.", function() {
+    it("synchronously fails if start is called whilst already scraping.", function() {
         scraper.start();
 
         // Try start a second time whilst it is already scraping. Should fail 
-        // syncronously. 
+        // synchronously. 
         var returned_error;
         $.when(scraper.start()).then(
             function done(){
@@ -62,6 +63,9 @@ describe("Scraper", function() {
         runs(function() {
             expect($.fn.append.callCount).toBe(1);
             expect($.fn.remove.callCount).toBe(1);
+
+            var append_iframe_arg = $.fn.append.mostRecentCall.args[0];
+            expect(append_iframe_arg.attr('src')).toBe(scraper.INITIAL_SCRAPING_URL);
         });
     });
 
