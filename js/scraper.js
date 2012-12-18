@@ -22,12 +22,11 @@
 var bfd = bfd || {};
 
 bfd.Scraper = function Scraper(){ 
+    this.INITIAL_SCRAPING_URL = 'http://www.myfitnesspal.com/reports/printable_diary/?load';
+    this.ALREADY_SCRAPING_ERROR = 'Already scraping.';
+    this.NOT_LOGGED_IN_ERROR = 'Not logged into myfitnesspal.com';
 
-    var INITIAL_SCRAPING_URL = 'http://www.myfitnesspal.com/reports/printable_diary/?load';
-    var ALREADY_SCRAPING_ERROR = 'Already scraping.';
-    var NOT_LOGGED_IN_ERROR = 'Not logged into myfitnesspal.com';
-
-    var current_defer;
+    var current_defer = false;
     var $iframe;
 
     function scraper_result_listener(message) {
@@ -36,46 +35,46 @@ bfd.Scraper = function Scraper(){
         if(scraped_meals){
             current_defer.resolve(scraped_meals);
         } else if(message.not_logged_in){
-            current_defer.reject(NOT_LOGGED_IN_ERROR);
+            current_defer.reject(this.NOT_LOGGED_IN_ERROR);
         } else {
             // Recieved a message we don't care about, don't want to do 
             // cleanup just yet.
             return;
         }
 
-        clean_up_scraper();
+        stop();
     }
 
-    function clean_up_scraper(){
+    function stop(){
         $iframe.remove();
         chrome.extension.onMessage.removeListener(scraper_result_listener);
         current_defer = false;
     }
 
-    function start() { 
+    this.start = function start() { 
         var defer = $.Deferred();
 
         if(!current_defer) {
-            chrome.extension.onMessage.addListener(scraper_result_listener);
 
             current_defer = defer;
             $iframe = $('<iframe/>', {
-                src: INITIAL_SCRAPING_URL 
+                src: this.INITIAL_SCRAPING_URL 
             });
+
+            chrome.extension.onMessage.addListener(scraper_result_listener);
+
             $('body').append($iframe);
         } else {
-            defer.reject(ALREADY_SCRAPING_ERROR);
+            defer.reject(this.ALREADY_SCRAPING_ERROR);
         }
 
         return defer.promise();
-    }
+    };
 
-    return {
-        start : start,
-        ALREADY_SCRAPING_ERROR: ALREADY_SCRAPING_ERROR,
-        NOT_LOGGED_IN_ERROR: NOT_LOGGED_IN_ERROR
+    this.is_scraping = function is_scraping(){
+        return current_defer !== false;
     };
 };
 
-bfd.scraper = bfd.Scraper();
+bfd.scraper = new bfd.Scraper();
 
