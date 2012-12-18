@@ -59,8 +59,28 @@ describe("Scraper", function() {
         }, 'the scraper to finish.', 20);
 
         runs(function() {
-            expect($.fn.append.callCount).toEqual(1);
-            expect($.fn.remove.callCount).toEqual(1);
+            expect($.fn.append.callCount).toBe(1);
+            expect($.fn.remove.callCount).toBe(1);
+        });
+    });
+
+    it("passes back the scraped meals.", function() {
+        var recieved_scraped_meals; 
+
+        runs(function() {
+            $.when(scraper.start()).then(
+                function done(scraped_meals){
+                    recieved_scraped_meals = scraped_meals;
+                }
+            );
+        });
+
+        waitsFor(function() {
+            return !scraper.is_scraping(); 
+        }, 'the scraper to finish.', 20);
+
+        runs(function() {
+            expect(recieved_scraped_meals).toEqual(DUMMY_SCRAPED_MEALS);
         });
     });
 });
