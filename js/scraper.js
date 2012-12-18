@@ -29,7 +29,33 @@ bfd.Scraper = function Scraper(){
     var current_defer = false;
     var $iframe;
 
-    function scraper_result_listener(message) {
+    this.start = function start() { 
+        var defer = $.Deferred();
+
+        if(!current_defer) {
+            current_defer = defer;
+            create_scraper();
+        } else {
+            defer.reject(this.ALREADY_SCRAPING_ERROR);
+        }
+
+        return defer.promise();
+    };
+
+    this.is_scraping = function is_scraping(){
+        return current_defer !== false;
+    };
+
+    function create_scraper(){
+        chrome.extension.onMessage.addListener(message_listener);
+
+        $iframe = $('<iframe/>', {
+            src: this.INITIAL_SCRAPING_URL 
+        });
+        $('body').append($iframe);
+    }
+
+    function message_listener(message) {
         var scraped_meals = message.scraped_meals && JSON.parse(message.scraped_meals);
 
         if(scraped_meals){
@@ -42,39 +68,14 @@ bfd.Scraper = function Scraper(){
             return;
         }
 
-        stop();
+        remove_scraper();
     }
 
-    function stop(){
+    function remove_scraper(){
+        chrome.extension.onMessage.removeListener(message_listener);
         $iframe.remove();
-        chrome.extension.onMessage.removeListener(scraper_result_listener);
         current_defer = false;
     }
-
-    this.start = function start() { 
-        var defer = $.Deferred();
-
-        if(!current_defer) {
-
-            current_defer = defer;
-            $iframe = $('<iframe/>', {
-                src: this.INITIAL_SCRAPING_URL 
-            });
-
-            chrome.extension.onMessage.addListener(scraper_result_listener);
-
-            $('body').append($iframe);
-        } else {
-            defer.reject(this.ALREADY_SCRAPING_ERROR);
-        }
-
-        return defer.promise();
-    };
-
-    this.is_scraping = function is_scraping(){
-        return current_defer !== false;
-    };
 };
 
 bfd.scraper = new bfd.Scraper();
-
