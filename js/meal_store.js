@@ -1,6 +1,6 @@
 var bfd = bfd || {};
 
-bfd.meals_store = (function(){
+bfd.meal_store = (function(){
     var storage = chrome.storage.local;
 
     function parse_meals(meals){
@@ -13,7 +13,7 @@ bfd.meals_store = (function(){
 
     function get(callback){
         storage.get('meals', function(result){
-            var stored_meals = parse_meals(result['meals']);
+            var stored_meals = parse_meals(result.meals);
             callback(stored_meals);
         });
     }
@@ -37,6 +37,7 @@ bfd.meals_store = (function(){
     return {
         get: get,
         append: append,
-        clear: clear
+        clear: clear,
+        storage: storage
     };
-})();
+}());

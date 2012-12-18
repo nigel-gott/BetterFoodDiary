@@ -6,7 +6,7 @@ $(function() {
 
         $.when(bfd.scraper.start()).then(
             function done(scraped_meals){
-                bfd.meals_store.append(scraped_meals);
+                bfd.meal_store.append(scraped_meals);
                 $('#meals').html(scraped_meals);    
             }, 
             function fail(error_message){
@@ -18,7 +18,7 @@ $(function() {
     $('#get_meals_link').click(function() {
         event.preventDefault();
 
-        bfd.meals_store.get(function(meals){
+        bfd.meal_store.get(function(meals){
             $('#meals').html(meals);
         });
     });
@@ -27,7 +27,7 @@ $(function() {
         // TODO: Add a big confirmation popup thingy before actually clearing.
         event.preventDefault();
 
-        bfd.meals_store.clear();
+        bfd.meal_store.clear();
     });
 
     $('body').prepend('<a href="' + chrome.extension.getURL("unittests.html") + '">Unit tests</a>');
