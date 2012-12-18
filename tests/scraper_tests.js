@@ -7,7 +7,8 @@ describe("Scraper", function() {
 
     beforeEach(function() {
         scraper = new bfd.Scraper();
-        dummy_message = {};
+        var json_meals = JSON.stringify(DUMMY_SCRAPED_MEALS);
+        dummy_message = { scraped_meals : json_meals };
 
         // Mock out so the scraper is not actually adding iframes to the test
         // page.
@@ -17,9 +18,6 @@ describe("Scraper", function() {
         // Mock a message being passed back.
         spyOn(chrome.extension.onMessage, 'addListener').andCallFake(
             function(message_listener){
-                var json_meals = JSON.stringify(DUMMY_SCRAPED_MEALS);
-                dummy_message.scraped_meals = json_meals;
-
                 // Pass back the message asynchronously. 
                 listener_timeout_id = setTimeout(function (){
                     message_listener(dummy_message);
@@ -39,17 +37,17 @@ describe("Scraper", function() {
 
         // Try start a second time whilst it is already scraping. Should fail 
         // syncronously. 
-        var error_message;
+        var returned_error;
         $.when(scraper.start()).then(
             function done(){
 
             },
-            function fail(e){
-                error_message = e;
+            function fail(error){
+                returned_error = error;
             }
         );
 
-        expect(error_message).toBe(scraper.ALREADY_SCRAPING_ERROR);
+        expect(returned_error).toBe(scraper.ALREADY_SCRAPING_ERROR);
     });
 
     it("adds and removes an iframe to the page.", function () {
@@ -68,13 +66,13 @@ describe("Scraper", function() {
     });
 
     it("passes back the scraped meals.", function() {
-        var recieved_scraped_meals; 
+        var returned_scraped_meals; 
 
         runs(function() {
 
             $.when(scraper.start()).then(
                 function done(scraped_meals){
-                    recieved_scraped_meals = scraped_meals;
+                    returned_scraped_meals = scraped_meals;
                 }
             );
         });
@@ -84,7 +82,32 @@ describe("Scraper", function() {
         }, 'the scraper to finish.', 20);
 
         runs(function() {
-            expect(recieved_scraped_meals).toEqual(DUMMY_SCRAPED_MEALS);
+            expect(returned_scraped_meals).toEqual(DUMMY_SCRAPED_MEALS);
         });
+    });
+
+    it("fails if the user is not logged in.", function() {
+        dummy_message = { not_logged_in : true };
+        var returned_error;
+
+        runs(function() {
+            $.when(scraper.start()).then(
+                function done(){
+
+                },
+                function fail(error){
+                    returned_error = error;
+                }
+            );
+        });
+
+        waitsFor(function() {
+            return !scraper.is_scraping(); 
+        }, 'the scraper to finish.', 20);
+
+        runs(function() {
+            expect(returned_error).toBe(scraper.NOT_LOGGED_IN_ERROR);
+        });
+
     });
 });

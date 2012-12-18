@@ -25,6 +25,7 @@ bfd.Scraper = function Scraper(){
     this.INITIAL_SCRAPING_URL = 'http://www.myfitnesspal.com/reports/printable_diary/?load';
     this.ALREADY_SCRAPING_ERROR = 'Already scraping.';
     this.NOT_LOGGED_IN_ERROR = 'Not logged into myfitnesspal.com';
+    that = this;
 
     var current_defer = false;
     var $iframe;
@@ -50,7 +51,7 @@ bfd.Scraper = function Scraper(){
         chrome.extension.onMessage.addListener(message_listener);
 
         $iframe = $('<iframe/>', {
-            src: this.INITIAL_SCRAPING_URL 
+            src: that.INITIAL_SCRAPING_URL 
         });
         $('body').append($iframe);
     }
@@ -61,7 +62,7 @@ bfd.Scraper = function Scraper(){
         if(scraped_meals){
             current_defer.resolve(scraped_meals);
         } else if(message.not_logged_in){
-            current_defer.reject(this.NOT_LOGGED_IN_ERROR);
+            current_defer.reject(that.NOT_LOGGED_IN_ERROR);
         } else {
             // Recieved a message we don't care about, don't want to do 
             // cleanup just yet.
