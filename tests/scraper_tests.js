@@ -1,10 +1,13 @@
 describe("Scraper", function() {
     var DUMMY_SCRAPED_MEALS = ['Tuna', 'Mash'];
 
-    var scraper, listener_timeout_id;
+    var scraper;
+    var listener_timeout_id;
+    var dummy_message;
 
     beforeEach(function() {
         scraper = new bfd.Scraper();
+        dummy_message = {};
 
         // Mock out so the scraper is not actually adding iframes to the test
         // page.
@@ -14,12 +17,12 @@ describe("Scraper", function() {
         // Mock a message being passed back.
         spyOn(chrome.extension.onMessage, 'addListener').andCallFake(
             function(message_listener){
+                var json_meals = JSON.stringify(DUMMY_SCRAPED_MEALS);
+                dummy_message.scraped_meals = json_meals;
+
                 // Pass back the message asynchronously. 
                 listener_timeout_id = setTimeout(function (){
-                    var test_data = JSON.stringify(DUMMY_SCRAPED_MEALS);
-                    var message = {scraped_meals: test_data};
-
-                    message_listener(message);
+                    message_listener(dummy_message);
                 }, 10);
             }
         );
@@ -68,6 +71,7 @@ describe("Scraper", function() {
         var recieved_scraped_meals; 
 
         runs(function() {
+
             $.when(scraper.start()).then(
                 function done(scraped_meals){
                     recieved_scraped_meals = scraped_meals;
