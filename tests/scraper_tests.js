@@ -1,10 +1,10 @@
 describe("Scraper", function() {
-
     var DUMMY_SCRAPED_MEALS = ['Tuna', 'Mash'];
 
+    var scraper, listener_timeout_id;
+
     beforeEach(function() {
-        this.scraper = new bfd.Scraper();
-        that = this;
+        scraper = new bfd.Scraper();
 
         // Mock out so the scraper is not actually adding iframes to the test
         // page.
@@ -15,7 +15,7 @@ describe("Scraper", function() {
         spyOn(chrome.extension.onMessage, 'addListener').andCallFake(
             function(message_listener){
                 // Pass back the message asynchronously. 
-                that.timeout_id = setTimeout(function (){
+                listener_timeout_id = setTimeout(function (){
                     var test_data = JSON.stringify(DUMMY_SCRAPED_MEALS);
                     var message = {scraped_meals: test_data};
 
@@ -28,16 +28,16 @@ describe("Scraper", function() {
 
     afterEach(function() {
         // Ensure that the timeout wont be executing after the test finishes.
-        clearTimeout(this.timeout_id);
+        clearTimeout(listener_timeout_id);
     });
 
     it("fails if start is called whilst already scraping.", function() {
-        this.scraper.start();
+        scraper.start();
 
         // Try start a second time whilst it is already scraping. Should fail 
         // syncronously. 
         var error_message;
-        $.when(this.scraper.start()).then(
+        $.when(scraper.start()).then(
             function done(){
 
             },
@@ -46,16 +46,16 @@ describe("Scraper", function() {
             }
         );
 
-        expect(error_message).toBe(this.scraper.ALREADY_SCRAPING_ERROR);
+        expect(error_message).toBe(scraper.ALREADY_SCRAPING_ERROR);
     });
 
     it("adds and removes an iframe to the page.", function () {
         runs(function() {
-            this.scraper.start();
+            scraper.start();
         });
 
         waitsFor(function() {
-            return !this.scraper.is_scraping(); 
+            return !scraper.is_scraping(); 
         }, 'the scraper to finish.', 20);
 
         runs(function() {
