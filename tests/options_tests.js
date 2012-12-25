@@ -1,5 +1,6 @@
 describe('Options page', function() {
     // Integration testing of the options page by loading it in an iframe.
+    // TODO: Holy god damn this is dumb please use PyAuto.
 
     var $iframe;
 
@@ -20,9 +21,9 @@ describe('Options page', function() {
             $iframe.load(function() {
                 contents_before = $iframe.contents().find('#meals').html();
                 // Must click the actual DOM node, this click function is raw 
-                // JS and not the jquery click function.
+                // JS and not the jQuery click function.
                 // The jQuery click does not fire the click event properly on 
-                // A tags as we are trying to do here.
+                // <a> tags as we are trying to do here.
                 $iframe.contents().find('#scrape_meals_link')[0].click();
             });
         });

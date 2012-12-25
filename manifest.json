@@ -12,21 +12,21 @@
             "matches": [
                 "http://www.myfitnesspal.com/food/diary/*"
             ],
-            "js": ["lib/jquery.js", "js/cs/food_diary.js"]
+            "js": ["js/lib/underscore.js", "js/lib/jquery.js", "js/lib/backbone.js", "js/models.js", "js/diary_parser.js", "js/cs/food_diary.js"]
         },
         {
             "matches": [
                 "http://www.myfitnesspal.com/reports/printable_diary/?load"
             ],
             "all_frames": true,
-            "js": ["lib/jquery.js", "js/cs/load_printable_diary.js"]
+            "js": ["js/lib/jquery.js", "js/cs/load_printable_diary.js"]
         },
         {
             "matches": [
                 "http://www.myfitnesspal.com/reports/printable_diary/?send"
             ],
             "all_frames": true,
-            "js": ["lib/jquery.js", "js/cs/send_printable_diary.js"]
+            "js": ["js/lib/jquery.js", "js/models.js", "js/cs/send_printable_diary.js"]
         },
         {
             "matches": [
@@ -41,5 +41,9 @@
         "tabs",
         "unlimitedStorage",
         "storage"
+    ],
+    "web_accessible_resources": [
+        "images/wrench_icon.png",
+        "images/tick_icon.png"
     ]
 }

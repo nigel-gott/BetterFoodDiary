@@ -1,4 +1,6 @@
-// TODO: Actually scrape results and parse into meals array.
-var meals2 = ['All Bran', 'Tuna'];
+var entries = [];
+$('#content .main-title-2').each(function (){
+    entries.push($(this).html());
+});
 
-chrome.extension.sendMessage({'scraped_meals' : JSON.stringify(meals2)});
+chrome.extension.sendMessage({'scraped_meals' : JSON.stringify(entries)});
