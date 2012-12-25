@@ -12,10 +12,6 @@ bfd.DiaryEntry = Backbone.Model.extend({
             new bfd.Nutrients()
         );
 
-        total_nutrients.each(function(nutrient) {
-            console.log(nutrient.get('name') + ' = ' + nutrient.get('value'));
-        });
-
         return total_nutrients;
     }
 });
@@ -65,17 +61,17 @@ bfd.Nutrients = Backbone.Collection.extend({
         other_nutrients.each(function(nutrient){
             var our_nutrient = that.has(nutrient);
             if(our_nutrient !== false){
-                our_nutrient.add(nutrient); 
+                our_nutrient.add(nutrient.get('name')); 
             } else {
                 that.add(nutrient.clone());
             }
         });
     },
-    has: function(nutrient){
+    has: function(nutrient_name){
         var names = this.pluck('name');
         var i;
         for(i = 0; i < names.length; i++){
-            if(names[i] === nutrient.get('name')){
+            if(names[i] === nutrient_name){
                 return this.at(i);
             }
         }
