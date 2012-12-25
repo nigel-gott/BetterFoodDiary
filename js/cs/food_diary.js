@@ -3,4 +3,4 @@
 var bfd = bfd || {};
 
 var parser = new bfd.DiaryParser($('#main .container table'));
-parser.parse().get('meals');
+parser.parse().get_total_nutrients();

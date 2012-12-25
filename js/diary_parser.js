@@ -53,7 +53,7 @@ bfd.DiaryParser = function DiaryParser(diary_table) {
     function parse_nutrient(index, nutrient_cell){
             return new bfd.Nutrient({
                 name: nutrient_names[index],
-                value: $(nutrient_cell).html()
+                value: parseInt($(nutrient_cell).html(), 10)
             });
     }
 
