@@ -41,5 +41,6 @@ $(function() {
     });
 
     $('body').prepend('<a href="' + chrome.extension.getURL("unittests.html") + '">Unit tests</a>');
+    $('body').prepend('<a href="' + chrome.extension.getURL("integrationtests.html") + '">Integration tests</a>');
 });
 
