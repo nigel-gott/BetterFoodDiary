@@ -24,6 +24,15 @@ describe("Models", function() {
             expect(nutrients.has('sugar').get('value')).toBe(30);
         });
 
+        it("changing a nutrient which was added will not update itself", function() {
+            var nutrient = new bfd.Nutrient({name: 'sugar', value:30});
+            expect(nutrients.has('sugar')).toBe(false);
+            nutrients.add(nutrient);
+            expect(nutrients.has('sugar').get('value')).toBe(30);
+            nutrient.set('value', 40);
+            expect(nutrients.has('sugar').get('value')).toBe(30);
+        });
+
         it("can add to a nutrient it already contains", function() {
             expect(nutrients.has('fat').get('value')).toBe(10);
             nutrients.add(new bfd.Nutrient({name: 'fat', value:40}));
