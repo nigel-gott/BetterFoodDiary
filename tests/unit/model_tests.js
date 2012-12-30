@@ -3,11 +3,22 @@ describe("Models", function() {
     describe("Nutrients", function() {
         var nutrients;
 
+        function create_nutrients(names, values){
+            var nutrients = new bfd.Nutrients();
+            var i;
+            for(i = 0; i < names.length; i++){
+                nutrients.add(create_nutrient(names[i],values[i]));
+            }
+
+            return nutrients;
+        }
+
+        function create_nutrient(name, value){
+            return new bfd.Nutrient({'name': name, 'value': value});
+        }
+
         beforeEach(function() {
-            nutrients = new bfd.Nutrients();
-            nutrients.add(new bfd.Nutrient({name: 'fat', value:10}));
-            nutrients.add(new bfd.Nutrient({name: 'fibre', value:20}));
-            nutrients.add(new bfd.Nutrient({name: 'protein', value:100}));
+            nutrients = create_nutrients(['fat', 'fibre', 'protein'], [10,20,100]);
         });
 
         it("can find a nutrient using its name", function() {
@@ -20,12 +31,12 @@ describe("Models", function() {
 
         it("can add a nutrient it does not currently contain", function() {
             expect(nutrients.has('sugar')).toBe(false);
-            nutrients.add(new bfd.Nutrient({name: 'sugar', value:30}));
+            nutrients.add(create_nutrient('sugar', 30));
             expect(nutrients.has('sugar').get('value')).toBe(30);
         });
 
         it("changing a nutrient which was added will not update itself", function() {
-            var nutrient = new bfd.Nutrient({name: 'sugar', value:30});
+            var nutrient = create_nutrient('sugar',30); 
             expect(nutrients.has('sugar')).toBe(false);
             nutrients.add(nutrient);
             expect(nutrients.has('sugar').get('value')).toBe(30);
@@ -35,8 +46,12 @@ describe("Models", function() {
 
         it("can add to a nutrient it already contains", function() {
             expect(nutrients.has('fat').get('value')).toBe(10);
-            nutrients.add(new bfd.Nutrient({name: 'fat', value:40}));
+            nutrients.add(create_nutrient('fat', 40));
             expect(nutrients.has('fat').get('value')).toBe(50);
+        });
+
+        it("can add together two Nutrients", function() {
+
         });
     });
 
