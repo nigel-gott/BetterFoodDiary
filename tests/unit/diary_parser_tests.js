@@ -1,0 +1,2 @@
+describe('Diary parser', function() {
+});
