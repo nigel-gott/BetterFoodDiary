@@ -58,7 +58,7 @@ bfd.Nutrients = Backbone.Collection.extend({
     model: bfd.Nutrient,
 
     add_nutrients: function(other_nutrients){
-        var bound_add = _.bind(add, this);
+        var bound_add = _.bind(this.add, this);
         other_nutrients.each(bound_add);
     },
 

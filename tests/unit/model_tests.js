@@ -51,7 +51,11 @@ describe("Models", function() {
         });
 
         it("can add together two Nutrients", function() {
-
+            var other_nutrients = create_nutrients(['fat','salt'],[5,30]);
+            other_nutrients.add_nutrients(nutrients);
+            expect(other_nutrients.has('fat').get('value')).toBe(15);
+            expect(other_nutrients.has('salt').get('value')).toBe(30);
+            expect(other_nutrients.has('fibre').get('value')).toBe(20);
         });
     });
 
