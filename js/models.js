@@ -56,17 +56,21 @@ bfd.Nutrient= Backbone.Model.extend({
 
 bfd.Nutrients = Backbone.Collection.extend({
     model: bfd.Nutrient,
+
     add_nutrients: function(other_nutrients){
-        var that = this;
-        other_nutrients.each(function(nutrient){
-            var our_nutrient = that.has(nutrient);
-            if(our_nutrient !== false){
-                our_nutrient.add(nutrient.get('name')); 
-            } else {
-                that.add(nutrient.clone());
-            }
-        });
+        var bound_add = _.bind(add, this);
+        other_nutrients.each(bound_add);
     },
+
+    add: function(nutrient){
+        var our_nutrient = this.has(nutrient.get('name'));
+        if(our_nutrient !== false){
+            our_nutrient.add(nutrient); 
+        } else {
+            Backbone.Collection.prototype.add.call(this, nutrient.clone());
+        }
+    },
+
     has: function(nutrient_name){
         var names = this.pluck('name');
         var i;
