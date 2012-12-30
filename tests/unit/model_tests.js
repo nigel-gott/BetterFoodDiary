@@ -22,40 +22,41 @@ describe("Models", function() {
         });
 
         it("can find a nutrient using its name", function() {
-            expect(nutrients.has('fat').get('value')).toBe(10);
+            expect(nutrients.get_value('fat')).toBe(10);
+            expect(nutrients.get_value('protein')).toBe(100);
         });
 
-        it("returns false if it has no such nutrient", function() {
-            expect(nutrients.has('carbs')).toBe(false);
+        it("returns false if it get_value no such nutrient", function() {
+            expect(nutrients.get_value('carbs')).toBe(false);
         });
 
         it("can add a nutrient it does not currently contain", function() {
-            expect(nutrients.has('sugar')).toBe(false);
+            expect(nutrients.get_value('sugar')).toBe(false);
             nutrients.add(create_nutrient('sugar', 30));
-            expect(nutrients.has('sugar').get('value')).toBe(30);
+            expect(nutrients.get_value('sugar')).toBe(30);
         });
 
         it("changing a nutrient which was added will not update itself", function() {
             var nutrient = create_nutrient('sugar',30); 
-            expect(nutrients.has('sugar')).toBe(false);
+            expect(nutrients.get_value('sugar')).toBe(false);
             nutrients.add(nutrient);
-            expect(nutrients.has('sugar').get('value')).toBe(30);
+            expect(nutrients.get_value('sugar')).toBe(30);
             nutrient.set('value', 40);
-            expect(nutrients.has('sugar').get('value')).toBe(30);
+            expect(nutrients.get_value('sugar')).toBe(30);
         });
 
         it("can add to a nutrient it already contains", function() {
-            expect(nutrients.has('fat').get('value')).toBe(10);
+            expect(nutrients.get_value('fat')).toBe(10);
             nutrients.add(create_nutrient('fat', 40));
-            expect(nutrients.has('fat').get('value')).toBe(50);
+            expect(nutrients.get_value('fat')).toBe(50);
         });
 
         it("can add together two Nutrients", function() {
             var other_nutrients = create_nutrients(['fat','salt'],[5,30]);
             other_nutrients.add_nutrients(nutrients);
-            expect(other_nutrients.has('fat').get('value')).toBe(15);
-            expect(other_nutrients.has('salt').get('value')).toBe(30);
-            expect(other_nutrients.has('fibre').get('value')).toBe(20);
+            expect(other_nutrients.get_value('fat')).toBe(15);
+            expect(other_nutrients.get_value('salt')).toBe(30);
+            expect(other_nutrients.get_value('fibre')).toBe(20);
         });
     });
 

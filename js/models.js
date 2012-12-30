@@ -71,6 +71,11 @@ bfd.Nutrients = Backbone.Collection.extend({
         }
     },
 
+    get_value: function(nutrient_name){
+        var nutrient = this.has(nutrient_name);
+        return nutrient && nutrient.get('value');
+    },
+
     has: function(nutrient_name){
         var names = this.pluck('name');
         var i;
