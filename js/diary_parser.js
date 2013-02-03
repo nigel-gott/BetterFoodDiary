@@ -4,7 +4,7 @@ bfd.DiaryParser = function DiaryParser(diary_table) {
     var meal_headers = diary_table.find('.meal_header');
     var nutrient_names = get_nutrient_names();
 
-    this.parse = function parse(table){
+    this.parse = function parse(){
         var diary_entry = new bfd.DiaryEntry({
             date: new Date(),
             meals: parse_collection(bfd.Meals, meal_headers, parse_meal)
