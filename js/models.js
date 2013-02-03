@@ -51,6 +51,19 @@ bfd.Ingredients = Backbone.Collection.extend({
 bfd.Nutrient= Backbone.Model.extend({
     add: function(nutrient){
         this.set({ value: this.get('value') + nutrient.get('value') });
+    },
+    toggle_efficiency: function(){
+        var displaying_efficiency = this.get('displaying_efficiency');
+        this.set({ 'displaying_efficiency' : !displaying_efficiency });
+    },
+    get_calorie_efficiency: function(){
+        var value = this.get('value');
+        var calories = this.get('nutrients').get_value('calories');
+        if(value !== 0 && calories){
+            return calories / value;
+        } else {
+            return '';
+        }
     }
 });
 

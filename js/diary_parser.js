@@ -4,19 +4,18 @@ bfd.DiaryParser = function DiaryParser(diary_table) {
     var meal_headers = diary_table.find('.meal_header');
     var nutrient_names = get_nutrient_names();
 
-    this.parse = function parse(){
-        var diary_entry = new bfd.DiaryEntry({
+    var nutrient_views = [];
+    this.diary_entry = new bfd.DiaryEntry({
             date: new Date(),
             meals: parse_collection(bfd.Meals, meal_headers, parse_meal)
-        }); 
-        return diary_entry;
-    };
+    }); 
+    this.nutrient_views = nutrient_views;
 
     function parse_collection(collection_type, element_list, parse_function){
         var collection = new collection_type();
 
         element_list.each(function(index, element){
-            collection.add(parse_function(index, element));
+            collection.add(parse_function(index, element, collection));
         });
 
         return collection;
@@ -38,22 +37,37 @@ bfd.DiaryParser = function DiaryParser(diary_table) {
 
     function parse_ingredient(index, ingredient_row){
         var nutrient_cells = $(ingredient_row).find('td:not([class])');
+        var nutrients = parse_collection(bfd.Nutrients, nutrient_cells, parse_nutrient);
+
         var ingredient = new bfd.Ingredient({
             name: get_ingredient_name(ingredient_row),
-            nutrients: parse_collection(bfd.Nutrients, nutrient_cells, parse_nutrient)
+            nutrients: nutrients
         });
 
+        append_nutrient_views(nutrients, nutrient_cells);
+
         return ingredient;
+    }
+
+    function append_nutrient_views(nutrients, nutrient_cells){
+        nutrient_cells.slice(1).each(function (index, element){
+            var new_view = new bfd.NutrientView({
+                'el': element,
+                'model': nutrients.at(index+1)
+            });
+            nutrient_views.push(new_view);
+        });
     }
 
     function get_ingredient_name(element){
         return $(element).first().first().html();
     }
 
-    function parse_nutrient(index, nutrient_cell){
+    function parse_nutrient(index, nutrient_cell, nutrients){
             return new bfd.Nutrient({
                 name: nutrient_names[index],
-                value: parseInt($(nutrient_cell).html(), 10)
+                value: parseInt($(nutrient_cell).html(), 10),
+                'nutrients': nutrients
             });
     }
 
