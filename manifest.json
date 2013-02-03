@@ -44,6 +44,7 @@
     ],
     "web_accessible_resources": [
         "images/wrench_icon.png",
-        "images/tick_icon.png"
+        "images/tick_icon.png",
+        "images/stats_icon.png"
     ]
 }
