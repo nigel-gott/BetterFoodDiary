@@ -4,12 +4,10 @@ bfd.DiaryParser = function DiaryParser(diary_table) {
     var meal_headers = diary_table.find('.meal_header');
     var nutrient_names = get_nutrient_names();
 
-    var nutrient_views = [];
     this.diary_entry = new bfd.DiaryEntry({
             date: new Date(),
             meals: parse_collection(bfd.Meals, meal_headers, parse_meal)
     }); 
-    this.nutrient_views = nutrient_views;
 
     function parse_collection(collection_type, element_list, parse_function){
         var collection = new collection_type();
@@ -44,18 +42,17 @@ bfd.DiaryParser = function DiaryParser(diary_table) {
             nutrients: nutrients
         });
 
-        append_nutrient_views(nutrients, nutrient_cells);
+        create_nutrient_views(nutrients, nutrient_cells);
 
         return ingredient;
     }
 
-    function append_nutrient_views(nutrients, nutrient_cells){
+    function create_nutrient_views(nutrients, nutrient_cells){
         nutrient_cells.slice(1).each(function (index, element){
-            var new_view = new bfd.NutrientView({
+            new bfd.NutrientView({
                 'el': element,
                 'model': nutrients.at(index+1)
             });
-            nutrient_views.push(new_view);
         });
     }
 

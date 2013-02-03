@@ -3,6 +3,4 @@
 (function (){
     var parser = new bfd.DiaryParser($('#main .container table'));
 
-    new bfd.StatsView({'nutrient_views': parser.nutrient_views});
-
 }());
