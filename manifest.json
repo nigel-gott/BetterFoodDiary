@@ -12,7 +12,15 @@
             "matches": [
                 "http://www.myfitnesspal.com/food/diary/*"
             ],
-            "js": ["js/lib/underscore.js", "js/lib/jquery.js", "js/lib/backbone.js", "js/models.js", "js/diary_parser.js", "js/cs/food_diary.js"]
+            "js": [
+                "js/lib/underscore.js", 
+                "js/lib/jquery.js", 
+                "js/lib/backbone.js", 
+                "js/models.js", 
+                "js/views.js", 
+                "js/diary_parser.js", 
+                "js/cs/food_diary.js"
+                    ]
         },
         {
             "matches": [
