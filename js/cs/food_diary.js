@@ -1,6 +1,7 @@
 // Content script for "http://www.myfitnesspal.com/food/diary/*"
 
 (function (){
-    var parser = new bfd.DiaryParser($('#main .container table'));
+    var parser = new bfd.FoodDiaryParser();
+    parser.parse();
 
 }());
