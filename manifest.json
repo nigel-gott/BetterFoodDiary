@@ -16,6 +16,8 @@
                 "js/lib/underscore.js", 
                 "js/lib/jquery.js", 
                 "js/lib/backbone.js", 
+                "js/lib/backbone-relational.js",
+                "js/lib/backbone-indexeddb.js",
                 "js/models.js", 
                 "js/views.js", 
                 "js/diary_parser.js", 

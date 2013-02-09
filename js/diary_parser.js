@@ -2,49 +2,65 @@ var bfd = bfd || {};
 
 bfd.DiaryEntryParser = function DiaryEntryParser(dom_parser, create_nutrient_views) {
 
+    var i = 1;
+
+    function id(){
+        i++;
+        return i;
+    }
+
     this.parse = function parse(){
         meal_headers = dom_parser.get_meal_headers(); 
         nutrient_names = dom_parser.get_nutrient_names(meal_headers);
         entry_date = dom_parser.get_entry_date();
 
-        return new bfd.DiaryEntry({
+        var entry = new bfd.DiaryEntry({
+            id: id(),
             date: entry_date,
-            meals: parse_collection(bfd.Meals, meal_headers, parse_meal)
+            meals: []
         }); 
+
+        parse_collection(entry.get('meals'), meal_headers, parse_meal);
+
+        console.log(entry.toJSON());
+        entry.save();
+        return entry;
     }
 
-    function parse_collection(collection_type, element_list, parse_function){
-        var collection = new collection_type();
-
+    function parse_collection(collection, element_list, parse_function){
         element_list.each(function(index, element){
-            collection.add(parse_function(index, element, collection));
+            var model = parse_function(index, element, collection);
+            collection.add(model);
         });
-
-        return collection;
     }
 
     function parse_meal(index, meal_header){
         var ingredient_rows = dom_parser.get_ingredient_rows(meal_header); 
         var meal = new bfd.Meal({
+            id: id(),
             name: dom_parser.get_meal_name(meal_header),
-            ingredients: parse_collection(bfd.Ingredients, ingredient_rows, parse_ingredient)
+            ingredients: []
         });
+
+        parse_collection(meal.get('ingredients'), ingredient_rows, parse_ingredient)
 
         return meal;
     }
 
     function parse_ingredient(index, ingredient_row){
         var nutrient_cells = dom_parser.get_nutrient_cells(ingredient_row); 
-        var nutrients = parse_collection(bfd.Nutrients, nutrient_cells, parse_nutrient);
 
         var ingredient = new bfd.Ingredient({
+            id: id(),
             name: dom_parser.get_ingredient_name(ingredient_row),
-            nutrients: nutrients
+            nutrients: []
         });
+
+        parse_collection(ingredient.get('nutrients'), nutrient_cells, parse_nutrient);
 
         // Optional function that can be passed in
         if(typeof create_nutrient_views === 'function'){
-            create_nutrient_views(nutrients, nutrient_cells);
+            create_nutrient_views(ingredient.get('nutrients'), nutrient_cells);
         }
 
         return ingredient;
@@ -52,9 +68,9 @@ bfd.DiaryEntryParser = function DiaryEntryParser(dom_parser, create_nutrient_vie
 
     function parse_nutrient(index, nutrient_cell, nutrients){
             return new bfd.Nutrient({
+                id: id(),
                 name: nutrient_names[index],
-                value: dom_parser.get_nutrient_value(nutrient_cell),
-                'nutrients': nutrients
+                value: dom_parser.get_nutrient_value(nutrient_cell)
             });
     }
 
@@ -90,7 +106,7 @@ bfd.FoodDiaryDomParser = function FoodDiaryDomParser(){
     };
 
     this.get_meal_name = function get_meal_name(meal_header){
-        return $(meal_header).first().html().toLowerCase();
+        return $(meal_header).find('.first').html().toLowerCase();
     };
 
     this.get_nutrient_cells = function get_nutrient_cells(ingredient_row){
@@ -98,7 +114,7 @@ bfd.FoodDiaryDomParser = function FoodDiaryDomParser(){
     };
 
     this.get_ingredient_name = function get_ingredient_name(element){
-        return $(element).first().first().html();
+        return $(element).find('.first a').html();
     };
 
     this.get_nutrient_value = function get_nutrient_value(nutrient_cell){
@@ -110,7 +126,7 @@ bfd.FoodDiaryDomParser = function FoodDiaryDomParser(){
 
 bfd.FoodDiaryParser = function FoodDiaryParser(){
     var dom_parser = new bfd.FoodDiaryDomParser();
-    var parser = new bfd.DiaryEntryParser(dom_parser, create_nutrient_views);
+    var parser = new bfd.DiaryEntryParser(dom_parser);
     this.parse = parser.parse;
 
     function create_nutrient_views(nutrients, nutrient_cells){

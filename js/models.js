@@ -1,6 +1,37 @@
 var bfd = bfd || {};
 
-bfd.DiaryEntry = Backbone.Model.extend({
+bfd.Database = {
+    id: "bfd",
+    description: "Better Food Diary",
+    migrations: [
+    {
+        version: 1,
+        migrate: function(transaction, next) {
+            transaction.db.createObjectStore('diary_entries');
+            transaction.db.createObjectStore('meals');
+            transaction.db.createObjectStore('ingredients');
+            transaction.db.createObjectStore('nutrients');
+            next();
+        }
+    }
+    ]
+}
+
+bfd.DiaryEntry = Backbone.RelationalModel.extend({
+    database: bfd.Database,
+    storeName: 'diary_entries',
+
+    relations: [{
+        type: Backbone.HasMany,
+        key: 'meals',
+        relatedModel: 'bfd.Meal',
+        collectionType: 'bfd.Meals',
+        reverseRelation: {
+            key: 'diary_entry',
+            includeInJSON: 'id',
+        }
+    }],
+
     get_total_nutrients: function(){
         var all_nutrients = this.get('meals').get_all_nutrients();
 
@@ -16,42 +47,69 @@ bfd.DiaryEntry = Backbone.Model.extend({
     }
 });
 
-bfd.Diary = Backbone.Collection.extend({
-    model: bfd.DiaryEntry
-});
-
-
-bfd.Meal = Backbone.Model.extend({
-});
-
 bfd.Meals = Backbone.Collection.extend({
-    model: bfd.Meal,
-    get_all_nutrients: function(){
-        var all_nutrients = [];
-        this.each(function(meal) {
-            meal.get('ingredients').push_nutrients(all_nutrients);
-        });
-        return all_nutrients;
-    }
+    model: bfd.Meal
 });
 
-bfd.Ingredient = Backbone.Model.extend({
+bfd.Meal = Backbone.RelationalModel.extend({
+    database: bfd.Database,
+    storeName: 'meals',
+
+    relations: [{
+        type: Backbone.HasMany,
+        key: 'ingredients',
+        relatedModel: 'bfd.Ingredient',
+        collectionType: 'bfd.Ingredients',
+        reverseRelation: {
+            key: 'meal',
+            includeInJSON: 'id',
+        }
+    }]
 });
 
 bfd.Ingredients = Backbone.Collection.extend({
-    model: bfd.Ingredient,
-    push_nutrients: function(all_nutrients){
-        this.each(function(ingredient) {
-            all_nutrients.push(ingredient.get('nutrients'));
-        });
-    }
+    model: bfd.Ingredient
 });
 
+bfd.Ingredient = Backbone.RelationalModel.extend({
+    database: bfd.Database,
+    storeName: 'ingredients',
 
-bfd.Nutrient= Backbone.Model.extend({
-    add: function(nutrient){
-        this.set({ value: this.get('value') + nutrient.get('value') });
+    relations: [{
+        type: Backbone.HasMany,
+        key: 'nutrients',
+        relatedModel: 'bfd.Nutrient',
+        collectionType: 'bfd.Nutrients',
+        reverseRelation: {
+            key: 'ingredient',
+            includeInJSON: 'id',
+        }
+    }]
+});
+
+bfd.Nutrients = Backbone.Collection.extend({
+    model: bfd.Nutrient,
+
+    get_value: function(nutrient_name){
+        var nutrient = this.has(nutrient_name);
+        return nutrient && nutrient.get('value');
     },
+
+    has: function(nutrient_name){
+        var names = this.pluck('name');
+        var i;
+        for(i = 0; i < names.length; i++){
+            if(names[i] === nutrient_name){
+                return this.at(i);
+            }
+        }
+        return false;
+    }
+});
+
+bfd.Nutrient= Backbone.RelationalModel.extend({
+    database: bfd.Database,
+    storeName: 'nutrients',
     toggle_efficiency: function(){
         var displaying_efficiency = this.get('displaying_efficiency');
         this.set({ 'displaying_efficiency' : !displaying_efficiency });
@@ -67,36 +125,3 @@ bfd.Nutrient= Backbone.Model.extend({
     }
 });
 
-bfd.Nutrients = Backbone.Collection.extend({
-    model: bfd.Nutrient,
-
-    add_nutrients: function(other_nutrients){
-        var bound_add = _.bind(this.add, this);
-        other_nutrients.each(bound_add);
-    },
-
-    add: function(nutrient){
-        var our_nutrient = this.has(nutrient.get('name'));
-        if(our_nutrient !== false){
-            our_nutrient.add(nutrient); 
-        } else {
-            Backbone.Collection.prototype.add.call(this, nutrient.clone());
-        }
-    },
-
-    get_value: function(nutrient_name){
-        var nutrient = this.has(nutrient_name);
-        return nutrient && nutrient.get('value');
-    },
-
-    has: function(nutrient_name){
-        var names = this.pluck('name');
-        var i;
-        for(i = 0; i < names.length; i++){
-            if(names[i] === nutrient_name){
-                return this.at(i);
-            }
-        }
-        return false;
-    }
-});
