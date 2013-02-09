@@ -1,0 +1,4 @@
+Currently we always load the food_diary content script for all food diary pages
+, instead we should check to ensure it is the users food diary that is open and
+not a public food diary.
+
