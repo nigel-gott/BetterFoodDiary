@@ -126,7 +126,7 @@ bfd.FoodDiaryDomParser = function FoodDiaryDomParser(){
 
 bfd.FoodDiaryParser = function FoodDiaryParser(){
     var dom_parser = new bfd.FoodDiaryDomParser();
-    var parser = new bfd.DiaryEntryParser(dom_parser);
+    var parser = new bfd.DiaryEntryParser(dom_parser, create_nutrient_views);
     this.parse = parser.parse;
 
     function create_nutrient_views(nutrients, nutrient_cells){

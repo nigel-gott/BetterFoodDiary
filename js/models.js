@@ -116,7 +116,7 @@ bfd.Nutrient= Backbone.RelationalModel.extend({
     },
     get_calorie_efficiency: function(){
         var value = this.get('value');
-        var calories = this.get('nutrients').get_value('calories');
+        var calories = this.get('ingredient').get('nutrients').get_value('calories');
         if(value !== 0 && calories){
             return calories / value;
         } else {
