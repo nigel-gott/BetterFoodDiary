@@ -24,11 +24,9 @@
         };
 
         this.get_entry_date = function get_entry_date(){
-            var d = new Date($('#date_selector').val());
-            var curr_date = d.getDate();
-            var curr_month = d.getMonth() + 1; //Months are zero based
-            var curr_year = d.getFullYear();
-            return curr_date + "/" + curr_month + "/" + curr_year;
+            // This is a hidden input field on the page with the pages date in
+            // YYYY-MM-DD format in its value.
+            return $('#date_selector').val();
         };
 
         // Returns the names of the nutrients displayed in the food diary.

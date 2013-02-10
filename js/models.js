@@ -1,25 +1,8 @@
 var bfd = bfd || {};
 
-bfd.Database = {
-    id: "bfd",
-    description: "Better Food Diary",
-    migrations: [
-    {
-        version: 1,
-        migrate: function(transaction, next) {
-            transaction.db.createObjectStore('diary_entries');
-            transaction.db.createObjectStore('meals');
-            transaction.db.createObjectStore('ingredients');
-            transaction.db.createObjectStore('nutrients');
-            next();
-        }
-    }
-    ]
-}
-
+var storage = new Backbone.ChromeStorage("diary_entries", "local");
 bfd.DiaryEntry = Backbone.RelationalModel.extend({
-    database: bfd.Database,
-    storeName: 'diary_entries',
+    chromeStorage: storage,
 
     relations: [{
         type: Backbone.HasMany,
@@ -47,14 +30,16 @@ bfd.DiaryEntry = Backbone.RelationalModel.extend({
     }
 });
 
+bfd.Diary = Backbone.Collection.extend({
+    model: bfd.DiaryEntry,
+    chromeStorage: storage
+});
+
 bfd.Meals = Backbone.Collection.extend({
     model: bfd.Meal
 });
 
 bfd.Meal = Backbone.RelationalModel.extend({
-    database: bfd.Database,
-    storeName: 'meals',
-
     relations: [{
         type: Backbone.HasMany,
         key: 'ingredients',
@@ -72,9 +57,6 @@ bfd.Ingredients = Backbone.Collection.extend({
 });
 
 bfd.Ingredient = Backbone.RelationalModel.extend({
-    database: bfd.Database,
-    storeName: 'ingredients',
-
     relations: [{
         type: Backbone.HasMany,
         key: 'nutrients',
@@ -89,7 +71,6 @@ bfd.Ingredient = Backbone.RelationalModel.extend({
 
 bfd.Nutrients = Backbone.Collection.extend({
     model: bfd.Nutrient,
-
     get_value: function(nutrient_name){
         var nutrient = this.has(nutrient_name);
         return nutrient && nutrient.get('value');
@@ -108,8 +89,6 @@ bfd.Nutrients = Backbone.Collection.extend({
 });
 
 bfd.Nutrient= Backbone.RelationalModel.extend({
-    database: bfd.Database,
-    storeName: 'nutrients',
     toggle_efficiency: function(){
         var displaying_efficiency = this.get('displaying_efficiency');
         this.set({ 'displaying_efficiency' : !displaying_efficiency });

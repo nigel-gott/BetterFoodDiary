@@ -28,16 +28,53 @@ $(function() {
     $('#get_meals_link').click(function() {
         event.preventDefault();
 
-        bfd.meal_store.get(function(meals){
-            $('#meals').html(meals_to_html(meals));
+        $('#meals').append('<hr>');
+        chrome.storage.local.get('diary_entries', function(result){
+            if(result.diary_entries){
+                var entries = result.diary_entries.split(',');
+                $('#meals').append('<p> Entries: ' + entries + '</p>');
+                var i;
+                for(i = 0; i < entries.length; i++){
+                    var id = 'diary_entries-' + entries[i];
+                    get_id(id);
+                }
+            } else {
+                $('#meals').append('<p> No diary entries found </p>');
+            }
         });
+        
+
+        function get_id(id){
+            chrome.storage.local.get(id, function(result){
+                $('#meals').append('<p> id : ' + id+ '</p>');
+                $('#meals').append(prettyPrint(JSON.parse(result[id]), {maxDepth:3}));
+            });
+        }
     });
 
     $('#clear_meals_link').click(function() {
         // TODO: Add a big confirmation popup thingy before actually clearing.
         event.preventDefault();
+        $('#meals').append('<hr>');
 
-        bfd.meal_store.clear();
+        var diary = new bfd.Diary();
+        diary.fetch().then(
+            function (){
+                $('#meals').append('<p> Number to delete: ' + diary.length + '</p>');
+
+                while(diary.length > 0){
+                    var entry = diary.pop();
+                    $('#meals').append('<p> destroying: ' + entry.id + '</p>');
+                    entry.destroy();
+                }
+            
+            },
+            function (dfd, error, e){
+                $('#meals').append('<p> Error delelting: ' + error + '</p>');
+
+            }
+        );
+
     });
 
     $('body').prepend('<a href="' + chrome.extension.getURL("unittests.html") + '">Unit tests</a>');

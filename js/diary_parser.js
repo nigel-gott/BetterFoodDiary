@@ -16,8 +16,6 @@ bfd.DiaryEntryParser = function DiaryEntryParser(dom_parser, create_nutrient_vie
 
         parse_collection(entry.get('meals'), meal_headers, parse_meal, entry_date);
 
-        console.log(entry.toJSON());
-        entry.save();
         return entry;
     }
 
