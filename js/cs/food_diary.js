@@ -1,11 +1,10 @@
 // Content script for "http://www.myfitnesspal.com/food/diary/*"
 
 (function (){
-    var dom_parser = new FoodDiaryDomParser();
+    var dom_parser = new FoodDiaryDOMParser();
     var parser = new bfd.DiaryEntryParser(dom_parser, create_nutrient_views);
 
-    var diary_entry = parser.parse();
-    diary_entry.save();
+    var diary_entry = parser.parse_and_save();
 
     function create_nutrient_views(nutrients, nutrient_cells){
         // Slice the cells to get rid of the first as we don't want to create an
@@ -18,7 +17,7 @@
         });
     }
 
-    function FoodDiaryDomParser(){
+    function FoodDiaryDOMParser(){
         this.get_meal_headers = function get_meal_headers(){
             return $('#main .container table').find('.meal_header');
         };
@@ -32,7 +31,7 @@
         // Returns the names of the nutrients displayed in the food diary.
         // For example: ['calories','carbs','fat','protein']
         this.get_nutrient_names = function get_nutrient_names(meal_headers){
-            names = [];
+            var names = [];
             // The first meal header contains the nutrient column names.
             // The first cell in a meal header contains the meals title. So we 
             // select all the cells greather than the first.

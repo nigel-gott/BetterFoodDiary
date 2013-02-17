@@ -1,6 +1,6 @@
 var bfd = bfd || {};
 
-var storage = new Backbone.ChromeStorage("diary_entries", "local");
+var storage = new Backbone.ChromeStorage('diary_entries', 'local');
 bfd.DiaryEntry = Backbone.RelationalModel.extend({
     chromeStorage: storage,
 

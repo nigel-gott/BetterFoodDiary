@@ -1,12 +1,14 @@
 var bfd = bfd || {};
 
+bfd.DiaryParser
+
 bfd.DiaryEntryParser = function DiaryEntryParser(dom_parser, create_nutrient_views) {
+    var nutrient_names;
 
-    this.parse = function parse(){
-        meal_headers = dom_parser.get_meal_headers(); 
+    this.parse_and_save = function parse_and_save(){
+        var meal_headers = dom_parser.get_meal_headers(); 
         nutrient_names = dom_parser.get_nutrient_names(meal_headers);
-        entry_date = dom_parser.get_entry_date();
-
+        var entry_date = dom_parser.get_entry_date();
 
         var entry = new bfd.DiaryEntry({
             id: entry_date,
@@ -16,6 +18,7 @@ bfd.DiaryEntryParser = function DiaryEntryParser(dom_parser, create_nutrient_vie
 
         parse_collection(entry.get('meals'), meal_headers, parse_meal, entry_date);
 
+        entry.save();
         return entry;
     }
 
@@ -67,10 +70,4 @@ bfd.DiaryEntryParser = function DiaryEntryParser(dom_parser, create_nutrient_vie
                 value: dom_parser.get_nutrient_value(nutrient_cell)
             });
     }
-
-
 };
-bfd.PrintableDiaryParser = function PrintableDiaryParser(){
-
-};
-

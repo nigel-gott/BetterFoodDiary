@@ -29,14 +29,29 @@
                 "http://www.myfitnesspal.com/reports/printable_diary/?load"
             ],
             "all_frames": true,
-            "js": ["js/lib/jquery.js", "js/cs/load_printable_diary.js"]
+            "js": [
+                "js/lib/underscore.js", 
+                "js/lib/jquery.js", 
+                "js/cs/load_printable_diary.js"
+                    ]
         },
         {
             "matches": [
                 "http://www.myfitnesspal.com/reports/printable_diary/?send"
             ],
             "all_frames": true,
-            "js": ["js/lib/jquery.js", "js/models.js", "js/cs/send_printable_diary.js"]
+            "js": [
+                "js/lib/moment.js", 
+                "js/lib/underscore.js", 
+                "js/lib/jquery.js", 
+                "js/lib/backbone.js", 
+                "js/lib/backbone-relational.js",
+                "js/lib/backbone.chromestorage.js",
+                "js/models.js", 
+                "js/views.js", 
+                "js/diary_parser.js", 
+                "js/cs/send_printable_diary.js"
+                    ]
         },
         {
             "matches": [

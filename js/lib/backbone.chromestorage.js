@@ -127,8 +127,6 @@
       }
   }
 
-  function 
-
   function our_records_have_changed(changes, type){
       return 
           type === this.type && 

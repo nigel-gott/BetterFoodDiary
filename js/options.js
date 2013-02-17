@@ -1,28 +1,18 @@
 $(function() {
     var bfd = chrome.extension.getBackgroundPage().bfd;
 
-    function meals_to_html(meals){
-        var i, html;
-        for(i = 0;i < meals.length; i++){
-            html += '<p>' + meals[i]  + '</p>';
-        }
-        return html;
-    }
-
     $('#scrape_meals_link').click(function() {
         event.preventDefault();
 
         $.when(bfd.scraper.start()).then(
             function done(scraped_meals){
-                var i;
-                bfd.meal_store.append(scraped_meals);
-
-                $('#meals').html(meals_to_html(scraped_meals));    
+                $('#meals').html(scraped_meals);    
             }, 
             function fail(error_message){
                 $('#meals').html('<h2>' + error_message + '</h2>');
             }
         );
+
     });
 
     $('#get_meals_link').click(function() {
@@ -57,23 +47,7 @@ $(function() {
         event.preventDefault();
         $('#meals').append('<hr>');
 
-        var diary = new bfd.Diary();
-        diary.fetch().then(
-            function (){
-                $('#meals').append('<p> Number to delete: ' + diary.length + '</p>');
-
-                while(diary.length > 0){
-                    var entry = diary.pop();
-                    $('#meals').append('<p> destroying: ' + entry.id + '</p>');
-                    entry.destroy();
-                }
-            
-            },
-            function (dfd, error, e){
-                $('#meals').append('<p> Error delelting: ' + error + '</p>');
-
-            }
-        );
+        chrome.storage.local.clear();
 
     });
 
